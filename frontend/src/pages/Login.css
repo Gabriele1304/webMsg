@@ -1,0 +1,14 @@
+#login-div {
+    position: absolute;
+    display: flex;
+}
+
+#login-div > div {
+    margin: 20px;
+    border: 20px;
+    position: absolute;
+}
+
+#username-password input, label {
+    margin: 10px;
+}
