@@ -4,4 +4,4 @@ const router = express.Router();
 
 router.use("/messages", messages);
 
-module.export = router;
+module.exports = router
