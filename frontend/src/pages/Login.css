@@ -9,6 +9,6 @@
     position: absolute;
 }
 
-#username-password input, label {
+#loginFormId,#registerFromId input, label {
     margin: 10px;
 }
