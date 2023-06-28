@@ -1,9 +1,10 @@
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faHome,faCog, faSignOutAlt, faUserPlus} from '@fortawesome/free-solid-svg-icons';
+
 import {useNavigate} from "react-router-dom";
+import {toast} from "react-toastify";
 
 export default function Settings({setLoggedIn}) {
     let navigate = useNavigate();
+    const host = "https://prova-o218.onrender.com"
 
     function logOut() {
         setLoggedIn(false)
