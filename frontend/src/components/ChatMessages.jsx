@@ -1,34 +1,83 @@
 import ChatMessagesListItems from "./ChatMessagesListItems";
+import {useEffect, useState} from "react";
 
 
-export default function ChatMessages(loggedUser, currentChat) {
-    const sendMessages = (e) => {
+export default function ChatMessages({currentChat, loggedUser: {username}}) {
+    const [chatMessages, setChatMessages] = useState([])
+
+    const sendMessage = (e) => {
         e.preventDefault()
-        let message = e.target.value;
-        e.target.value="";
+        let message = e.target.chatBox.value;
+        e.target.chatBox.value = "";
         console.log(message)
-        fetch("http://localhost:3001/api/messages", {
+        fetch("http://localhost:3001/api/messages/send", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({message, loggedUser, currentChat})
-        }).then(r => r.json())
-            .catch(e=>console.log(e))
+            body: JSON.stringify({
+                message: message,
+                username: username,
+                friend_username: currentChat
+            })
+        }).then(r => r.json()).then(log => console.log(log)).finally(()=>getMessages())
+            .catch(e => console.log(e))
 
     }
 
+    const getMessages = () => {
+        if (currentChat == null) return
+        console.log("getting messages from " + currentChat)
+        fetch("http://localhost:3001/api/messages/receive", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                username: username,
+                friend_username: currentChat
+            })
+        }).then(r => r.json()).then(messages => {
+            console.log(messages)
+            setChatMessages([...chatMessages, messages])
+        })
+            .catch(e => console.log(e))
+    }
+
+    useEffect(() => {
+        getMessages()
+    }, [currentChat])
     return (
         <>
-            <h1>CHAT</h1>
-            <div><h1>{"da sostituire"}</h1></div>
-            <ul style={{listStyle:"none"}}>
-                <ChatMessagesListItems currentUser={loggedUser} currentChat={currentChat}/>
-            </ul>
-            <form onSubmit={sendMessages}>
-                <input type="text" id="messageBox" placeholder="Invia messaggio...."/>
-                <input type="submit" hidden/>
-            </form>
+            {
+                currentChat != null ?
+                    <>
+                        <div style={{height: "10%"}}>
+                            <h1>{currentChat}</h1>
+                        </div>
+                        <div style={{height: "80%"}}>
+                            <ul style={{listStyle: "none"}}>
+                                {
+                                    chatMessages.length > 0 ?
+                                        chatMessages[0].map((message, index) => {
+                                            return <ChatMessagesListItems date={message.date} message={message.message}
+                                                                          username={message.sender}/>
+                                        })
+                                        :
+                                        null
+                                }
+                            </ul>
+                        </div>
+                        <div style={{height: "10%"}}>
+                            <form onSubmit={e => sendMessage(e)}>
+                                <input type="text" name="chatBox" placeholder="Invia messaggio...."/>
+                                <input type="submit" hidden/>
+                            </form>
+                        </div>
+                    </> : null
+            }
+
+
         </>
     )
 }

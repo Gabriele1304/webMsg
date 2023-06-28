@@ -1,10 +1,17 @@
 import React from 'react';
-import './Login.css'
+import {toast} from "react-toastify";
 
-export default function Login(loggedUser, {setLoggedUser}, loggedIn, {setLoggedIn}, isRegistered, {setIsRegistered}) {
-
-    async function loginFetch(username,password) {
-        await fetch("http://localhost:3001/api/user/login", {
+export default function Login({isRegistered, setIsRegistered, setLoggedIn, setLoggedUser}   ) {
+    async function submitLogin(e) {
+        e.preventDefault()
+        let username = e.target.username.value
+        let password = e.target.password.value
+        await loginFetch(username, password, e)
+    }
+    const loginFetch = async function (username, password, e) {
+        if (username === "" || password === "") {
+            toast("Inserire username e password");
+        } else await fetch("http://localhost:3001/api/user/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -17,14 +24,13 @@ export default function Login(loggedUser, {setLoggedUser}, loggedIn, {setLoggedI
             switch (r.status) {
                 case 200:
                     return r.json();
-                    break;
                 case 401:
+                    toast("password errata");
                     throw new Error("password errata");
-                    break;
                 case 404:
                     e.target.username.value = "";
+                    toast("Username non esistente");
                     throw new Error("Username non esistente");
-                    break;
             }
         })
             .then(response => {
@@ -37,21 +43,51 @@ export default function Login(loggedUser, {setLoggedUser}, loggedIn, {setLoggedI
             })
             .catch(e => console.log(e))
     }
-    async function submitLogin(e) {
+    function notRegistered(e) {
+        e.preventDefault()
+        setIsRegistered(!isRegistered)
+        localStorage.setItem('isRegistered', isRegistered)
+    }
+    async function sendRegisterForm(e) {
         e.preventDefault()
         let username = e.target.username.value
         let password = e.target.password.value
-        await loginFetch(username,password)
-    }
+        e.target.password.value = "";
+        if (username === "" || password === "") {
+            toast("Inserire username e password");
+        } else {
+            await fetch("http://localhost:3001/api/user/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({username: username, password: password})
+            }).then(async r => {
+                //200 ok, 401 username already exists
+                // console.log(r)
+                switch (r.status) {
+                    case 200:
+                        await loginFetch(username, password, e)
+                        setIsRegistered(true)
+                        localStorage.setItem('isRegistered', true)
+                        break;
+                    case 401:
+                        e.target.username.value = "";
+                        toast("username già presente");
+                        throw new Error("username già presente");
+                    case 400:
+                        toast("inserire un username ed una password");
+                        throw new Error("inserire un username ed una password");
+                }
+            })
+                .catch(e => console.log(e))
+        }
 
-    function notRegistered(e) {
-        e.preventDefault()
-        setIsRegistered(false)
-        localStorage.setItem('isRegistered', false)
     }
 
     return (
         <>
+            {isRegistered ? (
             <div id="login-div">
                 <form id="loginFormId" onSubmit={(e) => submitLogin(e)}>
                     <h1>Login </h1>
@@ -67,6 +103,23 @@ export default function Login(loggedUser, {setLoggedUser}, loggedIn, {setLoggedI
                     <input type="button" value="Registrati" onClick={(e) => notRegistered(e)}/>
                 </form>
             </div>
+            ) : (
+            <div id="register-div">
+                <h1>Registrati</h1>
+                <form id="registerFromId" onSubmit={(e) => sendRegisterForm(e)}>
+                    <div>
+                        <label>Username:</label>
+                        <input type="text" name="username" placeholder="inserire nuovo nome utente"/>
+                    </div>
+                    <div>
+                        <label>Password:</label>
+                        <input type="password" name="password" placeholder="password"/>
+                    </div>
+                    <input type="submit" value="Registrati"/>
+                    <input type="button" value="Login" onClick={(e) => notRegistered(e)}/>
+                </form>
+            </div>
+            )}
         </>
     )
 }

@@ -1,13 +1,9 @@
-export default function ChatMessagesListItems(currentUser,currentChat) {
-
-    function loadMessages(currentUser,currentChat){
-
-    }
+export default function ChatMessagesListItems({username, message, date}) {
 
     return (
-        <>
-            <li>item 1</li>
-
-        </>
+        <div>
+            <h1>{username}</h1>
+            <p>{message}<br/>{date}</p>
+        </div>
     )
 }

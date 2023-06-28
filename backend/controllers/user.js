@@ -19,17 +19,20 @@ module.exports = {
 
     register: (req, res) => {
         console.log(req.body)
-        User.findOne({username: req.body.username}).then(r => {
-            if (r == null) {
-                User.create({username: req.body.username, password: req.body.password})
-                friend_list.create({
-                    username: req.body.username,
-                    friend_requests: [],
-                    friend_list: [],
-                })
-                res.status(200).json({username: req.body.username})
-            } else res.status(401).send("Username già esistente")
-        })
-
+        if (req.body.password == '' || req.body.username == '')
+            res.status(400).json({error: "Inserire username e password"});
+        else {
+            User.findOne({username: req.body.username}).then(r => {
+                if (r == null) {
+                    User.create({username: req.body.username, password: req.body.password})
+                    friend_list.create({
+                        username: req.body.username,
+                        friend_requests: [],
+                        friend_list: [],
+                    })
+                    res.status(200).json({username: req.body.username})
+                } else res.status(401).send("Username già esistente")
+            })
+        }
     }
 }

@@ -5,9 +5,29 @@ body {
     sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow: scroll;
 }
 
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+#login-div {
+    position: absolute;
+    display: flex;
+}
+
+#login-div > div {
+    margin: 20px;
+    border: 20px;
+    position: absolute;
+}
+
+#loginFormId input, label {
+    margin: 10px;
+}
+
+#registerFromId input, label {
+    margin: 10px;
 }
