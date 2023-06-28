@@ -2,7 +2,7 @@ import React from 'react';
 import {toast} from "react-toastify";
 
 export default function Login({isRegistered, setIsRegistered, setLoggedIn, setLoggedUser}   ) {
-    const host = "http://localhost:3001"
+    const host = "web-msg-be.vercel.app"
 
     async function submitLogin(e) {
         e.preventDefault()

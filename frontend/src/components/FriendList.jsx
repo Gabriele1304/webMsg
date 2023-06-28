@@ -7,7 +7,7 @@ export default function FriendList({username}) {
     const [pendingRequests, setPendingRequests] = useState([]);
     const [newRequest, setNewRequest] = useState('');
     const navigate = useNavigate();
-    const host = "http://localhost:3001"
+    const host = "web-msg-be.vercel.app"
 
     const sendRequest = async () => {
         let response = await fetch(host + "/api/friend/send_request", {

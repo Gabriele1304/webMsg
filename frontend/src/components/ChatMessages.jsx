@@ -8,7 +8,7 @@ export default function ChatMessages({currentChat, loggedUser: {username}}) {
     const [chatMessages, setChatMessages] = useState([])
     const navigate=useNavigate()
 
-    const host ="http://localhost:3001"
+    const host ="web-msg-be.vercel.app"
 
     const sendMessage = (e) => {
         e.preventDefault()

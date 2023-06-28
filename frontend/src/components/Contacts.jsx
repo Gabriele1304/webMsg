@@ -4,7 +4,7 @@ import {useEffect, useState} from "react";
 export default function Contacts({setCurrentChat, loggedIn}) {
     const [contacts, setContacts] = useState([])
 
-    const host = "http://localhost:3001"
+    const host = "web-msg-be.vercel.app"
 
     useEffect(() => {
         loadContacts()
