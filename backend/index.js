@@ -19,13 +19,13 @@ app.use(cookieSession({
     name: 'session',
     keys: new Keygrip(['key1', 'key2'], 'SHA384', 'base64'),
 
-    // Cookie Options
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    maxAge: 24 * 60 * 60 * 1000
 }))
 app.use(function(req,res,next){
     res.header("Access-Control-Allow-Origin", "https://web-msg.vercel.app");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     req.io = io;
+    req.db = db;
     next();
 });
 app.use('/api', router)
