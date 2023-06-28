@@ -17,8 +17,7 @@ export default function Settings({setLoggedIn}) {
             method: "get",
             headers: {
                 "Content-Type": "application/json"
-            },
-            body: JSON.stringify({username: localStorage.getItem("loggedUserName"), friend_username: localStorage.getItem("loggedUserPassword")})
+            }
         }).then(r => r.json()).then(log => {
             toast(log.message)
             localStorage.clear()
