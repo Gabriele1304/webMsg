@@ -29,3 +29,5 @@ app.use(function(req,res,next){
     next();
 });
 app.use('/api', router)
+
+module.exports = app
