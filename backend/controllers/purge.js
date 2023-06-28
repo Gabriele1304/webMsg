@@ -5,7 +5,10 @@ const friend_list = require('../models/friend_list')
 
 module.exports = {
     purge: (req, res) => {
-        User.deleteMany({})
+        User.deleteMany({}).then(r=> {
+            console.log("deletemany")
+            console.log(r)
+        })
         Message.deleteMany({})
         Chat.deleteMany({})
         friend_list.deleteMany({})
