@@ -26,6 +26,8 @@ router.get('/', (req, res) => {
 
     friendController.getPendingRequests(req, res)
 
+}).post('/delete', (req, res) => {
+    friendController.removeFriend(req, res)
 })
 
 module.exports = router

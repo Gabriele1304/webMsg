@@ -17,15 +17,13 @@ function addFriendQuery(username, friend_username) {
 }
 
 function removeFriendQuery(username, friend_username) {
-    friend_list.findOneAndUpdate({
+    return friend_list.findOneAndUpdate({
         username: username
     }, {
-        $pullAll: {
+        $pull: {
             friend_list: {friend_username: friend_username}
         }
-    }).then(r => {
-        return r
-    })
+    }).then(r => console.log(r))
 }
 
 function addFriendRequestQuery(username, friend_username, isRequester) {
@@ -102,7 +100,7 @@ module.exports = {
                 await addFriendRequestQuery(req.body.username, req.body.friend_username, true)
                 await addFriendRequestQuery(req.body.friend_username, req.body.username, false)
                 console.log("Richiesta inviata")
-                res.json({message: "Richiesta inviata", refresh: true});
+                res.json({message: "Richiesta inviata"});
             }
         }
 
@@ -118,7 +116,6 @@ module.exports = {
             await createChat(username, friend_username)
             res.json({message: "Richiesta accettata"})
         } else {
-            console.log("Richiesta rifiutata")
             removeFriendRequestQuery(username, friend_username)
             removeFriendRequestQuery(friend_username, username)
             res.json({message: "Richiesta rifiutata"})
@@ -140,6 +137,19 @@ module.exports = {
                     res.json({error: "Non ci sono richieste in attesa"})
                 }
             })
+
+    },
+
+    removeFriend: (req, res) => {
+        removeFriendQuery(req.body.username, req.body.friend_username).then(
+            ()=>{
+                removeFriendQuery(req.body.friend_username, req.body.username).then(
+                    ()=>{
+                        res.json({message: "Rimozione avvenuta con successo"})
+                    }
+                )
+            }
+        )
 
     }
 }

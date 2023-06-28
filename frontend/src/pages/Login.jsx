@@ -2,6 +2,8 @@ import React from 'react';
 import {toast} from "react-toastify";
 
 export default function Login({isRegistered, setIsRegistered, setLoggedIn, setLoggedUser}   ) {
+    const host = "http://localhost:3001"
+
     async function submitLogin(e) {
         e.preventDefault()
         let username = e.target.username.value
@@ -11,7 +13,7 @@ export default function Login({isRegistered, setIsRegistered, setLoggedIn, setLo
     const loginFetch = async function (username, password, e) {
         if (username === "" || password === "") {
             toast("Inserire username e password");
-        } else await fetch("http://localhost:3001/api/user/login", {
+        } else await fetch(host+"/api/user/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -56,7 +58,7 @@ export default function Login({isRegistered, setIsRegistered, setLoggedIn, setLo
         if (username === "" || password === "") {
             toast("Inserire username e password");
         } else {
-            await fetch("http://localhost:3001/api/user/register", {
+            await fetch(host+"/api/user/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -82,7 +84,6 @@ export default function Login({isRegistered, setIsRegistered, setLoggedIn, setLo
             })
                 .catch(e => console.log(e))
         }
-
     }
 
     return (

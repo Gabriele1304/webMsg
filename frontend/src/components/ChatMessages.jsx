@@ -1,16 +1,20 @@
 import ChatMessagesListItems from "./ChatMessagesListItems";
 import {useEffect, useState} from "react";
+import {toast} from "react-toastify";
+import {useNavigate} from "react-router-dom";
 
 
 export default function ChatMessages({currentChat, loggedUser: {username}}) {
     const [chatMessages, setChatMessages] = useState([])
+    const navigate=useNavigate()
+
+    const host ="http://localhost:3001"
 
     const sendMessage = (e) => {
         e.preventDefault()
         let message = e.target.chatBox.value;
         e.target.chatBox.value = "";
-        console.log(message)
-        fetch("http://localhost:3001/api/messages/send", {
+        fetch(host+"/api/messages/send", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -20,7 +24,7 @@ export default function ChatMessages({currentChat, loggedUser: {username}}) {
                 username: username,
                 friend_username: currentChat
             })
-        }).then(r => r.json()).then(log => console.log(log)).finally(()=>getMessages())
+        }).finally(()=>getMessages())
             .catch(e => console.log(e))
 
     }
@@ -28,7 +32,7 @@ export default function ChatMessages({currentChat, loggedUser: {username}}) {
     const getMessages = () => {
         if (currentChat == null) return
         console.log("getting messages from " + currentChat)
-        fetch("http://localhost:3001/api/messages/receive", {
+        fetch(host+"/api/messages/receive", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -38,10 +42,22 @@ export default function ChatMessages({currentChat, loggedUser: {username}}) {
                 friend_username: currentChat
             })
         }).then(r => r.json()).then(messages => {
-            console.log(messages)
-            setChatMessages([...chatMessages, messages])
+            setChatMessages(messages)
         })
             .catch(e => console.log(e))
+    }
+
+    const removeFriend = () => {
+        fetch(host +"/api/friend/delete", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({username: username, friend_username: currentChat})
+        }).then(r => r.json()).then(log => {
+            toast(log.message)
+            navigate("/")
+        })
     }
 
     useEffect(() => {
@@ -52,14 +68,15 @@ export default function ChatMessages({currentChat, loggedUser: {username}}) {
             {
                 currentChat != null ?
                     <>
-                        <div style={{height: "10%"}}>
+                        <div style={{height: "10%",display: "flex"}}>
                             <h1>{currentChat}</h1>
+                            <button style={{position: "absolute", right: "10px"}} onClick={() => removeFriend()}>remove friend</button>
                         </div>
                         <div style={{height: "80%"}}>
                             <ul style={{listStyle: "none"}}>
                                 {
                                     chatMessages.length > 0 ?
-                                        chatMessages[0].map((message, index) => {
+                                        chatMessages.map((message, index) => {
                                             return <ChatMessagesListItems date={message.date} message={message.message}
                                                                           username={message.sender}/>
                                         })
@@ -68,11 +85,12 @@ export default function ChatMessages({currentChat, loggedUser: {username}}) {
                                 }
                             </ul>
                         </div>
-                        <div style={{height: "10%"}}>
+                        <div style={{ display: "flex",position: "relative", bottom: "10px"}}>
                             <form onSubmit={e => sendMessage(e)}>
                                 <input type="text" name="chatBox" placeholder="Invia messaggio...."/>
                                 <input type="submit" hidden/>
                             </form>
+                            <button onClick={() => getMessages()}>ReloadChat</button>
                         </div>
                     </> : null
             }

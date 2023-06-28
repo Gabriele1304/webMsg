@@ -4,9 +4,12 @@ import {useEffect, useState} from "react";
 export default function Contacts({setCurrentChat, loggedIn}) {
     const [contacts, setContacts] = useState([])
 
-    useEffect(()=>{
+    const host = "http://localhost:3001"
+
+    useEffect(() => {
         loadContacts()
-    },[loggedIn])
+    }, [loggedIn])
+
     /*
     paths:
     api/friend/get
@@ -20,7 +23,7 @@ export default function Contacts({setCurrentChat, loggedIn}) {
     }
 
     function loadContacts() {
-        fetch("http://localhost:3001/api/friend/get", {
+        fetch(host + "/api/friend/get", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -38,7 +41,7 @@ export default function Contacts({setCurrentChat, loggedIn}) {
         <>
             <div id="contactsContainer">
                 <h1>CONTATTI</h1>
-                {contacts.map((contact,index) =>
+                {contacts.map((contact, index) =>
                     <ContactsItem contact={contact} index={index} selectChat={selectChat}/>
                 )}
 

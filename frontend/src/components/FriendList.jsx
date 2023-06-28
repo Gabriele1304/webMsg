@@ -1,25 +1,28 @@
 import React, {useEffect, useState} from 'react';
 import FriendItem from "./FriendItem";
+import {toast} from "react-toastify";
+import {useNavigate} from "react-router-dom";
 
 export default function FriendList({username}) {
     const [pendingRequests, setPendingRequests] = useState([]);
     const [newRequest, setNewRequest] = useState('');
+    const navigate = useNavigate();
+    const host = "http://localhost:3001"
 
     const sendRequest = async () => {
-        if (newRequest.trim() !== '') {
-            let response = await fetch("http://localhost:3001/api/friend/send_request", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({username: username, friend_username: newRequest.toString()})
-            })
-            response = await response.json()
-            if (response.refresh) {
-                getPendingRequests()
-            }
-            setNewRequest('')
-        }
+        let response = await fetch(host + "/api/friend/send_request", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({username: username, friend_username: newRequest.toString()})
+        })
+        response = await response.json()
+        toast(response.message)
+        setPendingRequests("")
+        getPendingRequests()
+
+        setNewRequest('')
     };
 
     const sendResponse = (friend_username, response) => {
@@ -27,7 +30,7 @@ export default function FriendList({username}) {
         console.log(response)
         console.log(friend_username)
 
-        fetch("http://localhost:3001/api/friend/request_response", {
+        fetch(host + "/api/friend/request_response", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -37,15 +40,18 @@ export default function FriendList({username}) {
                 friend_username: friend_username,
                 accept_status: response
             })
-        }).then(r => r.json()).then(log => console.log(log))
-            .finally(() => getPendingRequests())
+        }).then(r => r.json()).then(r => {
+            toast(r.message)
+            setPendingRequests("")
+            getPendingRequests()
+        })
             .catch(e => console.log(e))
 
 
     }
 
     const getPendingRequests = () => {
-        fetch('http://localhost:3001/api/friend/get_pending_requests', {
+        fetch(host + '/api/friend/get_pending_requests', {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
