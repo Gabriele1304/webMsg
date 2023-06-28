@@ -3,7 +3,7 @@ const user = require("./user");
 const messages = require('./messages');
 const friend = require('./friend');
 const router = express.Router();
-const purgeController = require('./purge');
+const purgeController = require('../controllers/purge');
 
 router.use("/messages", messages);
 router.use("/user", user);
