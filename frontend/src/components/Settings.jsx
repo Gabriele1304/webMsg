@@ -20,9 +20,10 @@ export default function Settings({setLoggedIn}) {
             }
         }).then(r => r.json()).then(log => {
             toast(log.message)
-            localStorage.clear()
-            setLoggedIn(false)
+            logOut()
         })
+        localStorage.clear()
+        setLoggedIn(false)
     }
 
 
