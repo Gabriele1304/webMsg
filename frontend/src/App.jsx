@@ -2,11 +2,12 @@ import './App.css'
 import React, {useState} from 'react';
 import Login from "./pages/Login";
 import Chat from "./pages/Chat";
+import Settings from "./components/Settings";
 
 import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import {Route, Routes, useNavigate,} from "react-router-dom";
+import {Route, Routes,} from "react-router-dom";
 import ContactsRequests from "./pages/ContactsRequests";
 
 export default function App() {
@@ -25,8 +26,9 @@ export default function App() {
                         <Login loggedUser={loggedUser} setLoggedUser={setLoggedUser} loggedIn={loggedIn}
                                setLoggedIn={setLoggedIn} isRegistered={isRegistered} setIsRegistered={setIsRegistered}/>
                     }/>
-                    <Route path="/contactsRequests" element={<ContactsRequests loggedUser={loggedUser} setLoggedIn={setLoggedIn}/>}/>
-                    <Route path="/settings" element={"TODO"}/>
+                    <Route path="/contactsRequests"
+                           element={<ContactsRequests loggedUser={loggedUser} setLoggedIn={setLoggedIn}/>}/>
+                    <Route path="/settings" element={<Settings setLoggedIn={setLoggedIn}/>}/>
                 </Routes>
 
                 <ToastContainer
