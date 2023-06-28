@@ -8,7 +8,7 @@ export default function ChatMessages({currentChat, loggedUser: {username}}) {
     const [chatMessages, setChatMessages] = useState([])
     const navigate=useNavigate()
 
-    const host ="web-msg-be.vercel.app"
+    const host ="https://prova-o218.onrender.com"
 
     const sendMessage = (e) => {
         e.preventDefault()

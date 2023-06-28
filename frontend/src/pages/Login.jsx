@@ -2,7 +2,7 @@ import React from 'react';
 import {toast} from "react-toastify";
 
 export default function Login({isRegistered, setIsRegistered, setLoggedIn, setLoggedUser}   ) {
-    const host = "web-msg-be.vercel.app"
+    const host = "https://prova-o218.onrender.com"
 
     async function submitLogin(e) {
         e.preventDefault()

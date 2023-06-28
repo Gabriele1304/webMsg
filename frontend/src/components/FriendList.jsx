@@ -1,13 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import FriendItem from "./FriendItem";
 import {toast} from "react-toastify";
-import {useNavigate} from "react-router-dom";
 
 export default function FriendList({username}) {
     const [pendingRequests, setPendingRequests] = useState([]);
     const [newRequest, setNewRequest] = useState('');
-    const navigate = useNavigate();
-    const host = "web-msg-be.vercel.app"
+    const host = "https://prova-o218.onrender.com"
 
     const sendRequest = async () => {
         let response = await fetch(host + "/api/friend/send_request", {
